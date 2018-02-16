@@ -25,6 +25,9 @@ Version 0.14
   ``skimage.measure.LineModelND``.
 - In ``skimage.feature.hog`` visualise has been changed to visualize.
 - `freeimage` plugin of ``skimage.io`` has been removed.
+- ``future.manual_segmentation.manual_polygon_segmentation`` and
+  ``future.manual_segmentation.manual_lasso_segmentation`` were updated to also
+  return the contour points picked, not just a mask image.
 
 Version 0.13
 ------------
