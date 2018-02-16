@@ -29,7 +29,7 @@ def _draw_polygon(ax, vertices, alpha=0.4):
 
 
 def manual_polygon_segmentation(image, alpha=0.4, return_all=False):
-    """Return a label image based on polygon selections made with the mouse.
+    """Return a label image and list of contours based on polygon selections made with the mouse.
 
     Parameters
     ----------
@@ -49,6 +49,10 @@ def manual_polygon_segmentation(image, alpha=0.4, return_all=False):
     labels : array of int, shape ([Q, ]M, N)
         The segmented regions. If mode is `'separate'`, the leading dimension
         of the array corresponds to the number of regions that the user drew.
+    contours : array of float, shape ([Q, ]O)
+        The contours of the segmented regions. If mode is `'separate'`, the
+        leading dimension of the array corresponds to the number of regions
+        that the user drew.
 
     Notes
     -----
@@ -59,9 +63,9 @@ def manual_polygon_segmentation(image, alpha=0.4, return_all=False):
     --------
     >>> from skimage import data, future, io
     >>> camera = data.camera()
-    >>> mask = future.manual_polygon_segmentation(camera)  # doctest: +SKIP
-    >>> io.imshow(mask)  # doctest: +SKIP
-    >>> io.show()  # doctest: +SKIP
+    >>> mask, contours = future.manual_polygon_segmentation(camera)   doctest: +SKIP
+    >>> io.imshow(mask)   doctest: +SKIP
+    >>> io.show()   doctest: +SKIP
     """
     list_of_vertex_lists = []
     polygons_drawn = []
@@ -134,13 +138,13 @@ def manual_polygon_segmentation(image, alpha=0.4, return_all=False):
     labels = (_mask_from_vertices(vertices, image.shape[:2], i)
               for i, vertices in enumerate(list_of_vertex_lists, start=1))
     if return_all:
-        return np.stack(labels)
+        return np.stack(labels), list_of_vertex_lists
     else:
-        return reduce(np.maximum, labels, np.broadcast_to(0, image.shape[:2]))
+        return reduce(np.maximum, labels, np.broadcast_to(0, image.shape[:2])), list_of_vertex_lists
 
 
 def manual_lasso_segmentation(image, alpha=0.4, return_all=False):
-    """Return a label image based on freeform selections made with the mouse.
+    """Return a label image  and list of contours based on freeform selections made with the mouse.
 
     Parameters
     ----------
@@ -160,6 +164,10 @@ def manual_lasso_segmentation(image, alpha=0.4, return_all=False):
     labels : array of int, shape ([Q, ]M, N)
         The segmented regions. If mode is `'separate'`, the leading dimension
         of the array corresponds to the number of regions that the user drew.
+    contours : array of float, shape ([Q, ]O)
+        The contours of the segmented regions. If mode is `'separate'`, the
+        leading dimension of the array corresponds to the number of regions
+        that the user drew.
 
     Notes
     -----
@@ -169,9 +177,9 @@ def manual_lasso_segmentation(image, alpha=0.4, return_all=False):
     --------
     >>> from skimage import data, future, io
     >>> camera = data.camera()
-    >>> mask = future.manual_lasso_segmentation(camera)  # doctest: +SKIP
-    >>> io.imshow(mask)  # doctest: +SKIP
-    >>> io.show()  # doctest: +SKIP
+    >>> mask, contours = future.manual_lasso_segmentation(camera)   doctest: +SKIP
+    >>> io.imshow(mask)   doctest: +SKIP
+    >>> io.show()   doctest: +SKIP
     """
     list_of_vertex_lists = []
     polygons_drawn = []
@@ -212,6 +220,6 @@ def manual_lasso_segmentation(image, alpha=0.4, return_all=False):
     labels = (_mask_from_vertices(vertices, image.shape[:2], i)
               for i, vertices in enumerate(list_of_vertex_lists, start=1))
     if return_all:
-        return np.stack(labels)
+        return np.stack(labels), list_of_vertex_lists
     else:
-        return reduce(np.maximum, labels, np.broadcast_to(0, image.shape[:2]))
+        return reduce(np.maximum, labels, np.broadcast_to(0, image.shape[:2])), list_of_vertex_lists
